@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Prepare') {
       steps {
-        echo "prepare step .... "
+        echo "prepare step .hgfhg... "
        
       }
     }
