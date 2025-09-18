@@ -20,7 +20,7 @@ pipeline {
   stages {
     stage('Prepare') {
       steps {
-        // ensure boto3 is present
+        echo "prepare step .... "
         sh 'python3 -m pip install --user boto3 || true'
         checkout scm
       }
@@ -28,7 +28,7 @@ pipeline {
 
     stage('Launch Spot') {
       steps {
-        // If using aws-creds (username/password) for AWS keys:
+echo "launch step ..."
         withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
           sh """
             python3 launch_spot.py \
