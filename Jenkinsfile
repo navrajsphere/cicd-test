@@ -1,16 +1,21 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Prepare') {
-      steps {
-        echo "prepare step .hgfhg... "
-       
-      }
+    stages {
+        stage('Checkout') {
+            steps {
+                // Pull code from repo
+                checkout scm
+            }
+        }
+
+        stage('Run Python Script') {
+            steps {
+                sh '''
+                    echo "Running Python script..."
+                    python3 script.py
+                '''
+            }
+        }
     }
-
-
-
-
-}
 }
