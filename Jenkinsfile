@@ -20,6 +20,7 @@ pipeline {
             steps {
                 script {
                     dockerImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}")
+                    echo "✅ Docker image built successfully: ${dockerImage.imageName()}"
                 }
             }
         }
