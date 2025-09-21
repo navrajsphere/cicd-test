@@ -1,16 +1,54 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_REGISTRY = "your-registry-url"    // e.g., docker.io / <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+        DOCKER_REPO = "your-username/your-app"   // e.g., myuser/myapp
+        DOCKER_IMAGE = "myapp"
+        BRANCH = "main"
+    }
+
     stages {
-        stage('Send POST Request') {
+        stage('Checkout') {
             steps {
-                sh '''
-                    echo "Sending POST request to localhost:8000..."
-                    curl -X POST http://localhost:8000 \
-                         -H "Content-Type: application/json" \
-                         -d '{"message": "Hello from Jenkins!"}'
-                '''
+                git branch: "${BRANCH}",
+                    url: 'https://github.com/navrajsphere/cicd-test.git'
             }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Login to Registry') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", "docker-credentials-id") {
+                        echo "Logged in to registry"
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", "docker-credentials-id") {
+                        dockerImage.push()
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
