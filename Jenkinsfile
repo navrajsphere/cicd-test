@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = "your-registry-url"    // e.g., docker.io / <aws_account_id>.dkr.ecr.<region>.amazonaws.com
-        DOCKER_REPO = "your-username/your-app"   // e.g., myuser/myapp
+        DOCKER_REGISTRY = "507508956373.dkr.ecr.ap-southeast-1.amazonaws.com"    // e.g., docker.io / <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+        DOCKER_REPO = "test"   // e.g., myuser/myapp
         DOCKER_IMAGE = "myapp"
         BRANCH = "main"
     }
@@ -19,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${env.BUILD_NUMBER}")
+                    dockerImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}")
                 }
             }
         }
