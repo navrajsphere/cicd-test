@@ -2,9 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = "507508956373.dkr.ecr.ap-southeast-1.amazonaws.com"    // e.g., docker.io / <aws_account_id>.dkr.ecr.<region>.amazonaws.com
-        DOCKER_REPO = "test"   // e.g., myuser/myapp
-        DOCKER_IMAGE = "myapp"
         BRANCH = "main"
     }
 
@@ -16,35 +13,18 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Python Script') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO} ."
-                    echo "✅ Docker image built successfully"
+                    sh "python3 script.py"
+                    echo "Python script ran successfully!!"
                 }
             }
         }
 
-        stage('Login to Registry') {
-            steps {
-                script {
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", "docker-credentials-id") {
-                        echo "Logged in to registry"
-                    }
-                }
-            }
-        }
+  
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", "docker-credentials-id") {
-                        dockerImage.push()
-                        dockerImage.push("latest")
-                    }
-                }
-            }
-        }
+  
     }
 
     post {
